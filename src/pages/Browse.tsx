@@ -1,56 +1,28 @@
-import { FaEdit, FaTrash, FaLaptop, FaCouch, FaBook, FaFootballBall } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { listingsData } from "../mockdata/listings";
+import { messagesData } from "../mockdata/messages";
 import { Link } from "react-router-dom";
-// Define types for Listing and Message
-interface Listing {
-  id: number;
-  title: string;
-  img: string;
-  desc: string;
-  price: number;
-}
 
-interface Message {
-  id: number;
-  title: string;
-  desc: string;
-  category: string;
-}
 
-// Define prop types for StatBox and FeatureBox
-interface StatBoxProps {
-  label: string;
-  value: string | number;
-}
-
-interface FeatureBoxProps {
-  label: string;
-  desc: string;
-}
 
 const Browse = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    setListings([
-      { id: 1, title: "Laptop", img: "laptop.jpg", desc: "A used laptop", price: 5000 },
-      { id: 2, title: "Sofa", img: "sofa.jpg", desc: "A comfortable sofa", price: 3000 },
-    ]);
-    setMessages([
-      { id: 1, title: "Message 1", desc: "This is a test message", category: "General" },
-      { id: 2, title: "Message 2", desc: "Another test message", category: "Inquiry" },
-    ]);
+    setListings(listingsData);
+    setMessages(messagesData); 
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div style={styles.container}>
       {/* Hero Section */}
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-extrabold text-blue-900 mb-4">
-          Trade with <br /> <span className="text-blue-600">Fellow Students</span>
+      <div style={styles.heroSection}>
+        <h1 style={styles.heroTitle}>
+          Trade with <br /> <span style={styles.heroTitleAccent}>Fellow Students</span>
         </h1>
-        <p className="text-lg text-gray-600 mb-6">
+        <p style={styles.heroSubtitle}>
           A simple, trusted marketplace for university students to buy and sell
           textbooks, electronics, and more.
         </p>
@@ -66,80 +38,110 @@ const Browse = () => {
       </div>
 
       {/* Stats */}
-      <div className="flex justify-center gap-10 mb-12">
+      <div style={styles.statsContainer}>
         <StatBox label="ACTIVE LISTING" value={listings.length} />
         <StatBox label="STUDENTS" value="24" />
         <StatBox label="RATING" value="4.8" />
       </div>
 
       {/* Categories */}
-      <h2 className="text-2xl font-semibold mb-6 text-center">Browse Categories</h2>
-      <div className="flex justify-center gap-6 mb-12">
-        {[
-          { name: "All items", icon: <FaLaptop /> },
-          { name: "Electronics", icon: <FaLaptop /> },
-          { name: "Furniture", icon: <FaCouch /> },
-          { name: "Textbooks", icon: <FaBook /> },
-          { name: "Sports", icon: <FaFootballBall /> },
-        ].map((cat) => (
-          <button
-            key={cat.name}
-            className="bg-gray-100 border border-gray-300 rounded-xl py-3 px-6 text-sm text-gray-700 cursor-pointer flex items-center gap-3"
-          >
-            {cat.icon}
-            {cat.name}
-          </button>
-        ))}
+      <h2 style={styles.sectionTitle}>Browse Categories</h2>
+      <div style={styles.categoriesContainer}>
+        {["All items", "Electronics", "Furniture", "Textbooks", "Sports"].map(
+          (cat) => (
+            <button key={cat} style={styles.categoryButton}>
+              {cat}
+            </button>
+          )
+        )}
       </div>
 
       {/* Latest Listings */}
-      <h2 className="text-2xl font-semibold mb-6 text-center">Latest Listings</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 mb-12">
-        {listings.map((item) => (
-          <div
-            key={item.id}
-            className="border border-gray-300 rounded-xl p-6 bg-white shadow-lg hover:shadow-xl"
-          >
-            <img
-              src={item.img}
-              alt={item.title}
-              className="w-full h-48 object-cover rounded-lg mb-6"
-            />
-            <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">{item.desc}</p>
-            <p className="font-semibold text-blue-600 mb-4">
-              {item.price.toLocaleString()} บาท
-            </p>
-            <div className="flex gap-4">
-              <button className="bg-blue-100 rounded-md p-2">
-                <FaEdit />
-              </button>
-              <button className="bg-red-100 rounded-md p-2">
-                <FaTrash />
-              </button>
-            </div>
-          </div>
-        ))}
+  <div style={styles.latestHeader}>
+    <div style={{ textAlign: "center" }}>
+      <h2 style={styles.sectionTitle}>Latest Listings</h2>
+      <p style={{ color: "#6b7280", marginBottom: "20px" }}>
+        Recently posted by students
+      </p>
+    </div>
+    <span style={{position: "absolute",right: 0,bottom: 0, color: "#9ca3af", fontSize: "14px",}}>
+      {listings.length} items found
+    </span>
+  </div>
+
+  <div style={styles.listingsGrid}>
+  {listings.map((item) => (
+    <div key={item.id} style={styles.listingCard}>
+      <div style={{ position: "relative" }}>
+        <img
+  src={item.img}
+  alt={item.title}
+  style={{
+    width: "100%",
+    height: "180px",
+    objectFit: "cover",
+    borderRadius: "20px 20px 0 0", 
+    display: "block", 
+    margin: 0,
+    padding: 0 
+  }}
+/>
+        <span
+          style={{
+            position: "absolute",
+            top: "8px",
+            left: "8px",
+            background:
+              item.category === "Electronic"
+                ? "#a855f7"
+                : item.category === "Furniture"
+                ? "#f59e0b"
+                : "#22c55e",
+            color: "#fff",
+            fontSize: "12px",
+            padding: "4px 10px",
+            borderRadius: "999px",
+          }}
+        >
+          {item.category}
+        </span>
       </div>
 
+      {/* เนื้อหา */}
+      <h3 style={styles.listingTitle}>{item.title}</h3>
+      <p style={styles.listingDesc}>{item.desc}</p>
+
+      <p style={styles.listingPrice}>
+        {item.price.toLocaleString()} บาท
+      </p>
+
+      {/* footer */}
+      <div style={styles.listingFooter}>
+        <span>⏱ {item.time}</span>
+        <span>📍 {item.distance}</span>
+      </div>
+      <div style={styles.listingUser}>👤 {item.user}</div>
+    </div>
+  ))}
+  
+</div>
+
       {/* Recent Messages */}
-      <h2 className="text-2xl font-semibold mb-6 text-center">Recent Messages</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+      <h2 style={styles.sectionTitle}>Recent Messages</h2>
+      <p>Student looking for something</p>
+      <div style={styles.messagesGrid}>
         {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className="border border-gray-300 rounded-xl p-6 bg-white shadow-sm"
-          >
-            <h4 className="font-semibold text-lg mb-2">{msg.title}</h4>
-            <p className="text-sm text-gray-600 mb-2">{msg.desc}</p>
-            <span className="text-sm text-blue-600">{msg.category}</span>
+          <div key={msg.id} style={styles.messageCard}>
+            <h4 style={styles.messageTitle}>{msg.title}</h4>
+            <p style={styles.messageDesc}>{msg.desc}</p>
+            <span style={styles.messageCategory}>{msg.category}</span>
           </div>
         ))}
       </div>
 
       {/* Safe & Trusted Trading */}
-      <h2 className="text-2xl font-semibold mb-6 text-center">Safe & Trusted Trading</h2>
-      <div className="flex justify-center gap-10 flex-wrap mb-12">
+      <h2 style={styles.sectionTitle}>Safe & Trusted Trading</h2>
+      <div style={styles.featuresContainer}>
         <FeatureBox label="Verified Students" desc="All users are verified university students." />
         <FeatureBox label="Quick Responses" desc="Connect with sellers instantly on campus." />
         <FeatureBox label="Community Driven" desc="Built by students, for students." />
@@ -148,19 +150,209 @@ const Browse = () => {
   );
 };
 
-// Components
+/* Components */
 const StatBox: React.FC<StatBoxProps> = ({ label, value }) => (
-  <div className="text-center">
-    <p className="text-3xl font-semibold text-gray-900">{value}</p>
-    <p className="text-sm text-gray-600">{label}</p>
+  <div style={styles.statBox}>
+    <p style={styles.statValue}>{value}</p>
+    <p style={styles.statLabel}>{label}</p>
   </div>
 );
 
 const FeatureBox: React.FC<FeatureBoxProps> = ({ label, desc }) => (
-  <div className="text-center max-w-xs">
-    <p className="text-xl font-semibold text-gray-900 mb-2">{label}</p>
-    <p className="text-sm text-gray-600">{desc}</p>
+  <div style={styles.featureBox}>
+    <p style={styles.featureLabel}>{label}</p>
+    <p style={styles.featureDesc}>{desc}</p>
   </div>
 );
+
+/* Styles */
+const styles = {
+  container: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    padding: "32px 16px",
+  },
+  
+  heroSection: {
+    textAlign: "center" as const,
+    marginBottom: "40px",
+  },
+  
+  heroTitle: {
+    fontSize: "36px",
+    fontWeight: "700",
+    color: "#1e3a8a",
+    marginBottom: "12px",
+  },
+  
+  heroTitleAccent: {
+    color: "#2563eb",
+  },
+  
+  heroSubtitle: {
+    color: "#6b7280",
+    marginTop: "12px",
+  },
+  
+  statsContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "40px",
+    marginBottom: "40px",
+  },
+  listingFooter: {
+  display: "flex",
+  justifyContent: "space-between",
+  fontSize: "12px",
+  color: "#6b7280",
+  marginTop: "8px",
+},
+
+listingUser: {
+  fontSize: "12px",
+  color: "#6b7280",
+  marginTop: "4px",
+},
+  statBox: {
+    textAlign: "center" as const,
+  },
+  
+  statValue: {
+    fontSize: "22px",
+    fontWeight: "700",
+    color: "#111827",
+  },
+  
+  statLabel: {
+    fontSize: "14px",
+    color: "#6b7280",
+  },
+  
+  sectionTitle: {
+    fontSize: "20px",
+    fontWeight: "600",
+    marginBottom: "20px",
+    textAlign: "center" as const,
+  },
+
+  latestHeader: {
+  position: "relative",
+  marginBottom: "20px",
+},
+  
+  categoriesContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "16px",
+    marginBottom: "40px",
+  },
+  
+  categoryButton: {
+    background: "#f9fafb",
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    padding: "12px 16px",
+    cursor: "pointer",
+  },
+  
+  listingsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
+    gap: "20px",
+    marginBottom: "40px",
+  },
+  
+  listingCard: {
+    border: "1px solid #e5e7eb",
+    borderRadius: "20px",
+    padding: "0px",
+    background: "#fff",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+  },
+  
+  listingTitle: {
+    fontWeight: "600",
+    marginBottom: "6px",
+  },
+  
+  listingDesc: {
+    color: "#6b7280",
+    fontSize: "14px",
+  },
+  
+  listingPrice: {
+    fontWeight: "700",
+    color: "#2563eb",
+    marginTop: "6px",
+  },
+  
+  listingActions: {
+    display: "flex",
+    gap: "10px",
+    marginTop: "10px",
+  },
+  
+  iconButton: {
+    background: "#f3f4f6",
+    border: "none",
+    padding: "6px 10px",
+    borderRadius: "8px",
+    cursor: "pointer",
+  },
+  
+  messagesGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+    gap: "20px",
+    marginBottom: "40px",
+  },
+  
+  messageCard: {
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    padding: "16px",
+    background: "#fff",
+  },
+  
+  messageTitle: {
+    fontWeight: "600",
+    marginBottom: "6px",
+  },
+  
+  messageDesc: {
+    fontSize: "14px",
+    color: "#6b7280",
+  },
+  
+  messageCategory: {
+    fontSize: "12px",
+    color: "#2563eb",
+  },
+  
+  featuresContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "40px",
+    marginBottom: "40px",
+    flexWrap: "wrap" as const,
+  },
+  
+  featureBox: {
+    textAlign: "center" as const,
+    maxWidth: "260px",
+  },
+  
+  featureLabel: {
+    fontSize: "18px",
+    fontWeight: "700",
+    color: "#111827",
+    marginBottom: "8px",
+  },
+  
+  featureDesc: {
+    fontSize: "14px",
+    color: "#6b7280",
+  },
+};
 
 export default Browse;
